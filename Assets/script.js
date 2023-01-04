@@ -36,13 +36,18 @@ function weatherApp(event) {
                 function (data) {return data.json()
                 }).then(
                     function (currentWeather) {
-                        
-                        var temp = currentWeather.list[0].main.temp
+                        console.log(currentWeather)
+                        var cityName = currentWeather.city.name
+                        var temp = currentWeather.list[0].main.temp 
+                        var kToF = Math.floor(((temp-273.15)*1.8)+32)
                         var wind = currentWeather.list[0].wind.deg
                         var humidity = currentWeather.list[0].main.humidity
-                        console.log(temp, humidity, wind)
-
-                        currentDay.textContent = "Temp: " + temp + " Wind: " + wind + " Humidity " + humidity
+                        var todayDate = currentWeather.list[0].dt_txt
+                        var dateShort = todayDate.split(' ')
+                        var DS = dateShort[0]
+                        console.log(cityName, DS, kToF, humidity, wind)
+                        currentDay.textContent = cityName + "(" + DS + ")" + " Temp: " + kToF + " Wind: " + wind + " Humidity: " + humidity
+                    
                     })
         }
     )
