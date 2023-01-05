@@ -41,12 +41,17 @@ function weatherApp(event) {
                     function (currentWeather) {
                         var cityName = currentWeather.name
                         var temp = currentWeather.main.temp 
-                        // var kToF = Math.floor(((temp-273.15)*1.8)+32)
                         var wind = currentWeather.wind.speed
                         var humidity = currentWeather.main.humidity
                         var todayDate = dayjs().format('M-DD-YYYY')
                         currentDay.textContent = cityName + "(" + todayDate + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity
-                    console.log(currentWeather)
+                        var icon = currentWeather.weather[0].icon
+                        var img0 = document.createElement("img");
+                        img0.src = 'https://openweathermap.org/img/w/' + icon + '.png'      
+        
+                        currentDay.appendChild(img0)
+                        
+                        console.log(currentWeather)
                     })
                 }
     )
@@ -65,6 +70,7 @@ var dayOne = function (requestURL){
         function(data) {
             console.log(data)
             for (var i = 7; i < 40; i+=8) {
+                console.log(data);
                 var cityName = data.city.name
                 var temp = data.list[i].main.temp 
                 var wind = data.list[i].wind.speed
@@ -72,10 +78,14 @@ var dayOne = function (requestURL){
                 var todayDate = data.list[i].dt_txt
                 var dateShort = todayDate.split(' ')
                 var DS = dateShort[0]
-                var fiveDay = cityName + "(" + DS + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity
+                var icon = data.list[i].weather[0].icon
+                var fiveDay = cityName + "(" + DS + ")" + icon + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity
                 var dayEl = document.createElement('div')
+                var img0 = document.createElement("img");
+                img0.src = 'https://openweathermap.org/img/w/' + icon + '.png'      
                 dayEl.textContent = fiveDay
                 daysContainer.appendChild(dayEl)
+                dayEl.appendChild(img0);
                 console.log(fiveDay)
                 // dayLoop(fiveDay)
                 
