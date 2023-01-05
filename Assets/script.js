@@ -5,10 +5,19 @@ var search = document.getElementById('search');
 var currentDay = document.getElementById('currentDay');
 var days = document.querySelectorAll("[id^='day']");
 var daysContainer = document.getElementById('days-container');
+var asideContainer = document.getElementById('buttonSearchContainer')
 
+function removeAllChildNodes(parent) {
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+}
 
 
 function weatherApp(event) {
+    removeAllChildNodes(currentDay)
+    removeAllChildNodes(daysContainer)
+
     event.preventDefault();
     var geoCode = 'http://api.openweathermap.org/geo/1.0/direct?q=' + citySearch.value + '&appid=' + apiKey;
 
@@ -34,12 +43,13 @@ function weatherApp(event) {
                         var wind = currentWeather.wind.speed;
                         var humidity = currentWeather.main.humidity;
                         var todayDate = dayjs().format('M-DD-YYYY');
-                        currentDay.textContent = cityName + "(" + todayDate + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
+                        var currentDayEl = cityName + "(" + todayDate + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
+                        currentDay.textContent = currentDayEl;
                         var icon = currentWeather.weather[0].icon;
                         var img0 = document.createElement("img");
                         img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';      
                         currentDay.appendChild(img0);
-                        
+                        sessionStorage.setItem((cityName + "Current Day"), currentDayEl)
                         
                     })
                 }
@@ -57,6 +67,8 @@ var dayOne = function (requestURL){
     return data })
     .then(
         function(data) {
+                var cityName = data.city.name;
+                makeCityButton(cityName);
             for (var i = 7; i < 40; i+=8) {
                 var cityName = data.city.name;
                 var temp = data.list[i].main.temp; 
@@ -66,18 +78,33 @@ var dayOne = function (requestURL){
                 var dateShort = todayDate.split(' ');
                 var DS = dateShort[0];
                 var icon = data.list[i].weather[0].icon;
-                var fiveDay = cityName + "(" + DS + ")" + icon + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
+                var fiveDay = cityName + "(" + DS + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
                 var dayEl = document.createElement('div');
                 var img0 = document.createElement("img");
+                var newButton = document.createElement('button');
                 img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';      
                 dayEl.textContent = fiveDay;
                 daysContainer.appendChild(dayEl);
                 dayEl.appendChild(img0);
-               
+                sessionStorage.setItem((cityName + `future weather ${i}`), fiveDay);
+                
         }
 })
 }
 
+var makeCityButton = function (cityName) {
+    var newButton = document.createElement('button');
+    newButton.textContent = cityName;
+    asideContainer.appendChild(newButton)
+   
 
 
+
+}
+
+// var getSavedCity = function (event){
+//     var bla = event.target.getAttribute(blabla)
+// }
+
+// asideContainer.addEventListener('click', )
 search.addEventListener('submit', weatherApp)
