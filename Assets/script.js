@@ -7,6 +7,7 @@ var days = document.querySelectorAll("[id^='day']");
 var daysContainer = document.getElementById('days-container');
 var asideContainer = document.getElementById('buttonSearchContainer')
 
+
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
@@ -14,12 +15,12 @@ function removeAllChildNodes(parent) {
 }
 
 
-function weatherApp(event) {
+function weatherApp(event, cityNameInput) {
     removeAllChildNodes(currentDay)
     removeAllChildNodes(daysContainer)
 
     event.preventDefault();
-    var geoCode = 'http://api.openweathermap.org/geo/1.0/direct?q=' + citySearch.value + '&appid=' + apiKey;
+    var geoCode = 'http://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + '&appid=' + apiKey;
 
     fetch(geoCode)
     .then(function (response) {
@@ -81,7 +82,6 @@ var dayOne = function (requestURL){
                 var fiveDay = cityName + "(" + DS + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
                 var dayEl = document.createElement('div');
                 var img0 = document.createElement("img");
-                var newButton = document.createElement('button');
                 img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';      
                 dayEl.textContent = fiveDay;
                 daysContainer.appendChild(dayEl);
@@ -92,19 +92,24 @@ var dayOne = function (requestURL){
 })
 }
 
-var makeCityButton = function (cityName) {
-    var newButton = document.createElement('button');
-    newButton.textContent = cityName;
-    asideContainer.appendChild(newButton)
-   
-
-
-
+makeCityButton = function (cityName) {
+    var cityButton = document.getElementById(`new-city-${cityName}`);
+    if (cityButton === null) {
+        var newButton = document.createElement("button");
+        newButton.textContent = cityName;
+        asideContainer.appendChild(newButton)
+        newButton.id = (`new-city-${cityName}`)
+        newButton.onclick = function (event) {weatherApp(event,cityName)};
+        newButtonClick(newButton, cityName)
+    }
 }
 
-// var getSavedCity = function (event){
-//     var bla = event.target.getAttribute(blabla)
-// }
 
+    
+var newButtonClick = function(newButton, cityName){
+newButton.onclick = function (event) {weatherApp(event,cityName)}
+
+// find a way to remove the makeCityButton call maybe add an if statement to this saying if it exists dont run
+}
 // asideContainer.addEventListener('click', )
-search.addEventListener('submit', weatherApp)
+search.addEventListener('submit', function (event) { weatherApp(event, citySearch.value)})
