@@ -14,24 +14,27 @@
     <title>Weather App</title>
 </head>
 <body>
-    <header>Weather Dashboard</header>
+    <h1>Weather Dashboard</h1>
+    <aside id="buttonSearchContainer">
     <nav class="container d-flex align-items-start">
         <div class="row d-flex flex-sm-column">
-        <form id="search" class="card-body">
+        <form id="search" class="align-items-start w-100">
         <label>Search For a City:</label>
-        <input id="citySearch" class="col"></input>
-        <button id="weatherButton" class="col">Search</button>
+        <input id="citySearch" class="d-block w-100"></input>
+        <button id="weatherButton" class="d-block w-100">Search</button>
         </form>
-        <aside id="buttonSearchContainer"></aside>
+        </aside>
      </nav>
-     
-        5-Day Forecast:
-        <div class="row d-flex"></div>
-        <div id="currentDay" class="col"></div>
-        <main id="days-container">
-        
+        <section id="forecastContainer w-75 d-flex align-items-end">
+        <h2>5-Day Forecast:</h2>
+        <div  id ="currentContainer" class="row d-flex">
+        <!-- <div id="currentDay" class="col-12"></div> -->
+        </div>
+        <main id="days-container" class="row d-flex">
+        </main>   
+    </section>
     
-    </main>   
+   
 </body>
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="./Assets/script.js"></script>
