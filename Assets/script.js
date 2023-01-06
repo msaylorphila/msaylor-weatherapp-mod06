@@ -5,7 +5,7 @@ var search = document.getElementById('search');
 var currentDay = document.getElementById('currentDay');
 var days = document.querySelectorAll("[id^='day']");
 var daysContainer = document.getElementById('days-container');
-var asideContainer = document.getElementById('buttonSearchContainer')
+var asideContainer = document.getElementById('buttonSearchContainer');
 
 
 function removeAllChildNodes(parent) {
@@ -15,9 +15,9 @@ function removeAllChildNodes(parent) {
 }
 
 
-function weatherApp(event, cityNameInput) {
-    removeAllChildNodes(currentDay)
-    removeAllChildNodes(daysContainer)
+function getWeather(event, cityNameInput) {
+    removeAllChildNodes(currentDay);
+    removeAllChildNodes(daysContainer);
 
     event.preventDefault();
     var geoCode = 'http://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + '&appid=' + apiKey;
@@ -27,11 +27,13 @@ function weatherApp(event, cityNameInput) {
     return response.json();
     })
     .then(function (data) {
+    errorCheck(data);
     var lat = data[0].lat;
     var lon = data[0].lon;
     var requestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat='+ lat +'&lon=' + lon + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
     var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon +'&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
     dayOne(requestURL);
+    
     return todayWeather
     }).then(
         function (url) {
@@ -50,14 +52,19 @@ function weatherApp(event, cityNameInput) {
                         var img0 = document.createElement("img");
                         img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';      
                         currentDay.appendChild(img0);
-                        sessionStorage.setItem((cityName + "Current Day"), currentDayEl)
+                        
                         
                     })
                 }
     )
 }
 
-
+var errorCheck = function (data){
+    var empty = JSON.stringify(data);
+     if (empty === "[]"){
+        alert("Please enter a city name");
+    }
+}
 
 var dayOne = function (requestURL){
     fetch(requestURL)
@@ -78,7 +85,7 @@ var dayOne = function (requestURL){
                 var todayDate = data.list[i].dt_txt;
                 var dateShort = todayDate.split(' ');
                 var DS = dateShort[0];
-                var icon = data.list[i].weather[0].icon;
+                var icon = data.list[i].weather[0].icon.replace("n", "d");
                 var fiveDay = cityName + "(" + DS + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
                 var dayEl = document.createElement('div');
                 var img0 = document.createElement("img");
@@ -86,7 +93,7 @@ var dayOne = function (requestURL){
                 dayEl.textContent = fiveDay;
                 daysContainer.appendChild(dayEl);
                 dayEl.appendChild(img0);
-                sessionStorage.setItem((cityName + `future weather ${i}`), fiveDay);
+                
                 
         }
 })
@@ -97,19 +104,17 @@ makeCityButton = function (cityName) {
     if (cityButton === null) {
         var newButton = document.createElement("button");
         newButton.textContent = cityName;
-        asideContainer.appendChild(newButton)
-        newButton.id = (`new-city-${cityName}`)
-        newButton.onclick = function (event) {weatherApp(event,cityName)};
-        newButtonClick(newButton, cityName)
+        asideContainer.appendChild(newButton);
+        newButton.id = (`new-city-${cityName}`);
+        newButton.onclick = function (event) {getWeather(event,cityName)};
+        newButtonClick(newButton, cityName);
     }
 }
 
 
     
 var newButtonClick = function(newButton, cityName){
-newButton.onclick = function (event) {weatherApp(event,cityName)}
-
-// find a way to remove the makeCityButton call maybe add an if statement to this saying if it exists dont run
+newButton.onclick = function (event) {getWeather(event,cityName)}
 }
-// asideContainer.addEventListener('click', )
-search.addEventListener('submit', function (event) { weatherApp(event, citySearch.value)})
+
+search.addEventListener('submit', function (event) { getWeather(event, citySearch.value)});
