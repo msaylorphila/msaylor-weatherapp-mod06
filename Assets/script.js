@@ -24,7 +24,7 @@ function getWeather(event, cityNameInput) {
     removeAllChildNodes(daysContainer);
 
     event.preventDefault();
-    var geoCode = 'http://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + '&appid=' + apiKey;
+    var geoCode = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + '&appid=' + apiKey;
 
     fetch(geoCode)
         .then(function (response) {
@@ -55,7 +55,7 @@ function getWeather(event, cityNameInput) {
                             var todayDate = dayjs().format('M-DD-YYYY');
                             // var currentDayEl = "Temp: " + temp + "\u00B0F \n" + "Wind: " + wind + "MPH" + " Humidity: " + humidity + "%";
                             var headerEl = document.createElement("h2");
-                            var dateEl = document.createElement("h3");
+                            var dateEl = document.createElement("h");
                             var tempEl = document.createElement("p")
                             var windEl = document.createElement("p")
                             var humidityEl = document.createElement("p")
