@@ -16,22 +16,24 @@
 <body>
     <h1>Weather Dashboard</h1>
     <div class="d-flex">
-    <aside id="buttonSearchContainer" class="m-4 d-flex flex-column w-25">
+    <aside id="buttonSearchContainer" class="m-4 d-flex flex-column">
     <nav class="container d-flex align-items-start">
         <div class="row d-flex flex-sm-column"></div>
-        <form id="search" class="align-items-start">
-        <label>Search For a City:</label>
-        <input id="citySearch" class="d-block w-75"></input>
-        <button id="weatherButton" class="d-block w-75">Search</button>
+        <form id="searchFormEl" class="align-items-end">
+        <label id="formLabelEl">Search For a City:</label>
+        <input id="searchInput" class="d-block w-75"></input>
+        <button id="searchButtonEl" class="d-block w-75">Search</button>
         </form>
     </nav>
         </aside>
     
         
-        <div id="currentContainer" class="row d-flex align-items-end"></div>
-    </div>
-       
+        <div id="currentContainer" class="row d-flex"></div>
         
+    </div>
+    <h2 id="fiveday" class="fiveday hide">5 Day Weather Forecast:</h2>
+       
+        <!-- <h2 id="fiveday">5 Day Weather Forecast:</h2> -->
         <main id="days-container" class="row d-flex">
         </main>   
 

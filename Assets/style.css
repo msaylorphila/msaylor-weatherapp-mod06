@@ -14,6 +14,52 @@ aside {
 }
 
 h1 {
-    text-align: end;
+    text-align: center;
     opacity: 75%;
+
+}
+
+#currentContainer {
+    border: 5px #1f456e;
+    border-radius: 5px;
+}
+
+.hide {
+    display: none;
+}
+
+.card-body {
+    background-color: #52b2bf;
+    max-width: 25%;
+    margin: 3px;
+    border-radius: 5px;
+    justify-content: end;
+}
+
+.dayColor {
+    background-color: #52b2bf; 
+}
+
+#days-container {
+    padding-left: 230px
+
+}
+
+#searchButtonEl {
+    border-radius: 5px;
+    background-color: #52b2bf;
+}
+
+.buttonColor {
+    border-radius: 5px;
+    background-color: #52b2bf;
+}
+
+#formLabelEl {
+    font-size: 22px;
+
+}
+
+#fiveday{
+    padding-left: 222px;
 }
