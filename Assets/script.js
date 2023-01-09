@@ -47,22 +47,25 @@ function getWeather(event, cityNameInput) {
                     }).then(
                         function (currentWeather) {
                             var cityName = currentWeather.name;
-                            var temp = currentWeather.main.temp;
-                            var wind = currentWeather.wind.speed;
-                            var humidity = currentWeather.main.humidity;
+                            var temp = "Temp: " + currentWeather.main.temp + "\u00B0F";
+                            var wind = "Wind: " + currentWeather.wind.speed + "MPH";
+                            var humidity = "Humidity: " + currentWeather.main.humidity + "%";
                             var todayDate = dayjs().format('M-DD-YYYY');
-                            var currentDayEl = "(" + todayDate + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
+                            // var currentDayEl = "Temp: " + temp + "\u00B0F \n" + "Wind: " + wind + "MPH" + " Humidity: " + humidity + "%";
                             var headerEl = document.createElement("h2");
-                            var currentDay = document.createElement("p")
-                            headerEl.textContent = cityName;
-                            currentDay.textContent = currentDayEl;
+                            var tempEl = document.createElement("p")
+                            var windEl = document.createElement("p")
+                            var humidityEl = document.createElement("p")
+                            headerEl.textContent = cityName + "(" + todayDate + ")" ;
+                            tempEl.textContent = temp;
+                            windEl.textContent = wind;
+                            humidityEl.textContent = humidity;
                             // currentDay.classList.add('card')
                             var icon = currentWeather.weather[0].icon;
                             var img0 = document.createElement("img");
                             img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';
-                            currentContainer.appendChild(headerEl);
-                            currentContainer.appendChild(currentDay);
-                            currentDay.appendChild(img0);
+                            currentContainer.append(headerEl, tempEl, windEl, humidityEl);
+                            headerEl.appendChild(img0);
 
 
                         })
@@ -96,29 +99,30 @@ var dayOne = function (requestURL) {
                 makeCityButton(cityName);
                 for (var i = 7; i < 40; i += 8) {
                     var cityName = data.city.name;
-                    var temp = data.list[i].main.temp;
-                    var wind = data.list[i].wind.speed;
-                    var humidity = data.list[i].main.humidity;
+                    var temp = "Temp: " + data.list[i].main.temp + "\u00B0F";
+                    var wind = "Wind: " + data.list[i].wind.speed + "MPH";
+                    var humidity = "Humidity: " + data.list[i].main.humidity + "%";
                     var todayDate = data.list[i].dt_txt;
                     var dateShort = todayDate.split(' ');
-                    var DS = dateShort[0];
+                    var DS = dateShort[0].slice("6");
                     var icon = data.list[i].weather[0].icon.replace("n", "d");
-                    var fiveDay ="(" + DS + ")" + " Temp: " + temp + " Wind: " + wind + " Humidity: " + humidity;
+                    // var fiveDay =" Temp: " + temp + "\u00B0F" + " Wind: " + wind + "MPH" + " Humidity: " + humidity + "%";
                     var cardBody = document.createElement('div')
                     var headerEl = document.createElement('h2')
-                    var dayEl = document.createElement('p');
+                    var tempEl = document.createElement('p');
+                    var windEl = document.createElement('p');
+                    var humidityEl = document.createElement('p');
+                    headerEl.textContent = DS + "-2023";
                     var img0 = document.createElement("img");
-                    headerEl.textContent = cityName;
                     img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';
-                    cardBody.classList.add('card-body');
-                    dayEl.classList.add('col-lg-3')
-                    dayEl.textContent = fiveDay;
+                    cardBody.classList.add('card-body', "col-lg-3", "col-sm-12");
+                    tempEl.textContent = temp;
+                    windEl.textContent = wind;
+                    humidityEl.textContent = humidity
                     daysContainer.appendChild(cardBody);
-                    cardBody.appendChild(headerEl);
-                    cardBody.appendChild(dayEl)
-                    daysContainer.appendChild(cardBody);
-                    dayEl.appendChild(img0);
-                    console.log(fiveDay)
+                    cardBody.append(headerEl, tempEl, windEl, humidityEl);
+                    headerEl.appendChild(img0);
+                    // console.log(fiveDay)
 
 
                 }
@@ -130,7 +134,7 @@ makeCityButton = function (cityName) {
     if (cityButton === null) {
         var newButton = document.createElement("button");
         newButton.textContent = cityName;
-        newButton.classList.add('w-100');
+        newButton.classList.add('w-50');
         asideContainer.appendChild(newButton);
         newButton.id = (`new-city-${cityName}`);
         newButton.onclick = function (event) { getWeather(event, cityName) };

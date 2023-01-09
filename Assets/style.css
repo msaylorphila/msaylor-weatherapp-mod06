@@ -12,3 +12,8 @@ body {
 aside {
     max-width: 25%;
 }
+
+h1 {
+    text-align: end;
+    opacity: 75%;
+}
