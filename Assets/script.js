@@ -1,14 +1,11 @@
 var apiKey = '4973a6326f483e7b798272289cc9113f';
-var searchInput = document.getElementById('searchInput');
-// var weatherButton = document.getElementById('weatherButton');
+var cityInput = document.getElementById('cityInput');
 var searchFormEl = document.getElementById('searchFormEl');
-// var currentDay = document.getElementById('currentDay');
-// var days = document.querySelectorAll("[id^='day']");
 var daysContainer = document.getElementById('days-container');
 var asideContainer = document.getElementById('buttonSearchContainer');
 var currentContainer = document.getElementById('currentContainer');
-var forecastTitle = document.getElementById('fiveday')
-
+var forecastTitle = document.getElementById('fiveday');
+var countryCode = document.getElementById('countryCode')
 
 
 function removeAllChildNodes(parent) {
@@ -18,14 +15,14 @@ function removeAllChildNodes(parent) {
 }
 
 
-function getWeather(event, cityNameInput) {
+function getWeather(event, cityNameInput, countryCode) {
     forecastTitle.classList.add('hide')
     removeAllChildNodes(currentContainer);
     removeAllChildNodes(daysContainer);
 
     event.preventDefault();
-    var geoCode = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + '&appid=' + apiKey;
-
+    var geoCode = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + ',' + countryCode +'&appid=' + apiKey;
+    console.log(geoCode)
     fetch(geoCode)
         .then(function (response) {
             return response.json();
@@ -53,9 +50,8 @@ function getWeather(event, cityNameInput) {
                             var wind = "Wind: " + currentWeather.wind.speed + "MPH";
                             var humidity = "Humidity: " + currentWeather.main.humidity + "%";
                             var todayDate = dayjs().format('M-DD-YYYY');
-                            // var currentDayEl = "Temp: " + temp + "\u00B0F \n" + "Wind: " + wind + "MPH" + " Humidity: " + humidity + "%";
                             var headerEl = document.createElement("h2");
-                            var dateEl = document.createElement("h");
+                            var dateEl = document.createElement("p");
                             var tempEl = document.createElement("p")
                             var windEl = document.createElement("p")
                             var humidityEl = document.createElement("p")
@@ -64,7 +60,6 @@ function getWeather(event, cityNameInput) {
                             tempEl.textContent = temp;
                             windEl.textContent = wind;
                             humidityEl.textContent = humidity;
-                            // currentDay.classList.add('card')
                             var icon = currentWeather.weather[0].icon;
                             var img0 = document.createElement("img");
                             img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';
@@ -143,7 +138,7 @@ makeCityButton = function (cityName) {
     if (cityButton === null) {
         var newButton = document.createElement("button");
         newButton.textContent = cityName;
-        newButton.classList.add('w-50', 'buttonColor');
+        newButton.classList.add('buttonStyle');
         asideContainer.appendChild(newButton);
         newButton.id = (`new-city-${cityName}`);
         newButton.onclick = function (event) { getWeather(event, cityName) };
@@ -157,4 +152,4 @@ var newButtonClick = function (newButton, cityName) {
     newButton.onclick = function (event) { getWeather(event, cityName) }
 }
 
-searchFormEl.addEventListener('submit', function (event) { getWeather(event, searchInput.value) });
+searchFormEl.addEventListener('submit', function (event) { getWeather(event, cityInput.value, countryCode.value) });
