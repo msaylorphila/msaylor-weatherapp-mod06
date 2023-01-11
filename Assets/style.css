@@ -41,7 +41,7 @@ input {
 }
 
 #days-container {
-    padding-left: 230px;
+    padding-left: 28%;
 }
 
 #searchButtonEl {
@@ -61,5 +61,5 @@ input {
 }
 
 #fiveday{
-    padding-left: 222px;
+    padding-left: 30%;
 }

@@ -15,14 +15,13 @@ function removeAllChildNodes(parent) {
 }
 
 
-function getWeather(event, cityNameInput, countryCode) {
+function getCoordinates(event, cityNameInput, countryCode) {
     forecastTitle.classList.add('hide')
     removeAllChildNodes(currentContainer);
     removeAllChildNodes(daysContainer);
 
     event.preventDefault();
     var geoCode = 'https://api.openweathermap.org/geo/1.0/direct?q=' + cityNameInput + ',' + countryCode +'&appid=' + apiKey;
-    console.log(geoCode)
     fetch(geoCode)
         .then(function (response) {
             return response.json();
@@ -33,14 +32,34 @@ function getWeather(event, cityNameInput, countryCode) {
             }
             var lat = data[0].lat;
             var lon = data[0].lon;
-            var requestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + lat + '&lon=' + lon + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
-            var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
-            dayLoop(requestURL);
+            var name = data[0].name
+            var coordinates = [lat, lon]
+            var geoData = {
+                cityName: name,
+                coordinates: coordinates,
+            };
+            dayLoop(coordinates);
+            currentWeather(cityNameInput, coordinates)
+            var cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
+            if (cityObjArr == null) {
+                cityObjArr = [];
+            } 
 
-            return todayWeather
-        }).then(
-            function (url) {
-                fetch(url).then(
+            if (cityObjArr.filter(e => (e.cityName.toLowerCase() == cityNameInput.toLowerCase())).length == 0) {
+                cityObjArr.push(geoData)
+                localStorage.setItem("cityObjArr", JSON.stringify(cityObjArr))
+            }   
+     
+
+})}
+
+
+
+    
+            
+function currentWeather(cityNameInput, coordinates) {
+       var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + coordinates[0] + '&lon=' + coordinates[1] + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
+       fetch(todayWeather).then(
                     function (data) {
                         return data.json()
                     }).then(
@@ -69,8 +88,7 @@ function getWeather(event, cityNameInput, countryCode) {
 
                         })
             }
-        )
-}
+        
 
 var errorCheck = function (data) {
     var empty = JSON.stringify(data);
@@ -81,7 +99,9 @@ var errorCheck = function (data) {
     return false
 }
 
-var dayLoop = function (requestURL) {
+var dayLoop = function (coordinates) {
+    var requestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + coordinates[0] + '&lon=' + coordinates[1] + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
+
     fetch(requestURL)
         .then(function (response) {
             if (!response.ok) {
@@ -98,14 +118,15 @@ var dayLoop = function (requestURL) {
                 makeCityButton(cityName);
                 forecastTitle.classList.remove('hide')
                 for (var i = 7; i < 40; i += 8) {
+                    var eachDay = data.list[i]
                     var cityName = data.city.name;
-                    var temp = "Temp: " + data.list[i].main.temp + "\u00B0F";
-                    var wind = "Wind: " + data.list[i].wind.speed + "MPH";
-                    var humidity = "Humidity: " + data.list[i].main.humidity + "%";
-                    var todayDate = data.list[i].dt_txt;
+                    var temp = "Temp: " + eachDay.main.temp + "\u00B0F";
+                    var wind = "Wind: " + eachDay.wind.speed + "MPH";
+                    var humidity = "Humidity: " + eachDay.main.humidity + "%";
+                    var todayDate = eachDay.dt_txt;
                     var dateShort = todayDate.split(' ');
                     var DS = dateShort[0].slice("6");
-                    var icon = data.list[i].weather[0].icon.replace("n", "d");
+                    var icon = eachDay.weather[0].icon.replace("n", "d");
                     var cardBody = document.createElement('div')
                     var headerEl = document.createElement('span')
                     var tempEl = document.createElement('p');
@@ -133,23 +154,40 @@ var dayLoop = function (requestURL) {
             }).catch((err) => console.error(err))
 }
 
-makeCityButton = function (cityName) {
-    var cityButton = document.getElementById(`new-city-${cityName}`);
-    if (cityButton === null) {
-        var newButton = document.createElement("button");
-        newButton.textContent = cityName;
-        newButton.classList.add('buttonStyle');
-        asideContainer.appendChild(newButton);
-        newButton.id = (`new-city-${cityName}`);
-        newButton.onclick = function (event) { getWeather(event, cityName) };
-        newButtonClick(newButton, cityName);
+makeCityButton = function (cityName = null) {
+    if (cityName === null) {
+        var cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
+        if (cityObjArr != null && cityObjArr.length != 0) {
+            cityObjArr.forEach(cityObj => {
+                var savedCityName = cityObj.cityName
+                var cityButton = document.getElementById(`new-city-${savedCityName}`);
+                if (cityButton === null) {
+                    var newButton = document.createElement("button");
+                    newButton.textContent = savedCityName;
+                    newButton.classList.add('buttonStyle');
+                    asideContainer.appendChild(newButton);
+                    newButton.id = (`new-city-${savedCityName}`);
+                    newButtonClick(newButton, savedCityName);
+                }
+            })
+        }
+    } else {
+        var cityButton = document.getElementById(`new-city-${cityName}`);
+        if (cityButton === null) {
+            var newButton = document.createElement("button");
+            newButton.textContent = cityName;
+            newButton.classList.add('buttonStyle');
+            asideContainer.appendChild(newButton);
+            newButton.id = (`new-city-${cityName}`);
+            // newButton.onclick = function (event) { getWeather(event, cityName) };
+            newButtonClick(newButton, cityName);
+        }
     }
 }
 
 
-
 var newButtonClick = function (newButton, cityName) {
-    newButton.onclick = function (event) { getWeather(event, cityName) }
+    newButton.onclick = function (event) { getCoordinates(event, cityName) }
 }
-
-searchFormEl.addEventListener('submit', function (event) { getWeather(event, cityInput.value, countryCode.value) });
+makeCityButton() 
+searchFormEl.addEventListener('submit', function (event) { getCoordinates(event, cityInput.value, countryCode.value)});
