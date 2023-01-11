@@ -1,12 +1,19 @@
 var apiKey = '4973a6326f483e7b798272289cc9113f';
 var cityInput = document.getElementById('cityInput');
 var searchFormEl = document.getElementById('searchFormEl');
+var searchButtonEl = document.getElementById('searchButtonEl')
 var daysContainer = document.getElementById('days-container');
 var asideContainer = document.getElementById('buttonSearchContainer');
 var currentContainer = document.getElementById('currentContainer');
 var forecastTitle = document.getElementById('fiveday');
-var countryCode = document.getElementById('countryCode')
+var countryCode = document.getElementById('countryCode');
+var resetButtonEl = document.getElementById('resetButtonEl');
 
+function resetWeather (event) {
+    event.preventDefault();
+    localStorage.clear("cityObjArr");
+    location.reload();
+}
 
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
@@ -190,4 +197,5 @@ var newButtonClick = function (newButton, cityName) {
     newButton.onclick = function (event) { getCoordinates(event, cityName) }
 }
 makeCityButton() 
-searchFormEl.addEventListener('submit', function (event) { getCoordinates(event, cityInput.value, countryCode.value)});
+resetButtonEl.onclick = ('click,', function(event) {resetWeather(event)})
+searchButtonEl.addEventListener('click', function (event) { getCoordinates(event, cityInput.value, countryCode.value)});

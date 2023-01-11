@@ -44,7 +44,8 @@ input {
     padding-left: 28%;
 }
 
-#searchButtonEl {
+#searchButtonEl, 
+#resetButtonEl {
     border-radius: 8px;
     background-color: #52b2bf;
 }
