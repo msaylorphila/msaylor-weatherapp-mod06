@@ -1,7 +1,7 @@
 var apiKey = '4973a6326f483e7b798272289cc9113f';
 var cityInput = document.getElementById('cityInput');
 var searchFormEl = document.getElementById('searchFormEl');
-var searchButtonEl = document.getElementById('searchButtonEl')
+var searchButtonEl = document.getElementById('searchButtonEl');
 var daysContainer = document.getElementById('days-container');
 var asideContainer = document.getElementById('buttonSearchContainer');
 var currentContainer = document.getElementById('currentContainer');
@@ -9,11 +9,14 @@ var forecastTitle = document.getElementById('fiveday');
 var countryCode = document.getElementById('countryCode');
 var resetButtonEl = document.getElementById('resetButtonEl');
 
+// function to clear local storage and reload the page
 function resetWeather (event) {
     event.preventDefault();
     localStorage.clear("cityObjArr");
     location.reload();
 }
+
+// removes children from their parent elements 
 
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
@@ -21,9 +24,10 @@ function removeAllChildNodes(parent) {
     }
 }
 
-
+// this function takes our citynameinput and country code on click and fetches them into the geocoding url
+// it then is fetched and pulls the latitude, longitude, and city name and stores them into an object weve named geodata
 function getCoordinates(event, cityNameInput, countryCode) {
-    forecastTitle.classList.add('hide')
+    forecastTitle.classList.add('hide');
     removeAllChildNodes(currentContainer);
     removeAllChildNodes(daysContainer);
 
@@ -46,15 +50,17 @@ function getCoordinates(event, cityNameInput, countryCode) {
                 coordinates: coordinates,
             };
             dayLoop(coordinates);
-            currentWeather(cityNameInput, coordinates)
+            currentWeather(coordinates);
+            // we check to see if our city obj array is in local storage and if not we add set it to an empty array
             var cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
             if (cityObjArr == null) {
                 cityObjArr = [];
             } 
-
+            // this iterates through each item in our array, changes each cityname in our array to lower case and compares it to our input which weve also changed to lowercase.
+            // if there are 0 matches we push our geodata object and set our cityobjarr in localstorage.
             if (cityObjArr.filter(e => (e.cityName.toLowerCase() == cityNameInput.toLowerCase())).length == 0) {
-                cityObjArr.push(geoData)
-                localStorage.setItem("cityObjArr", JSON.stringify(cityObjArr))
+                cityObjArr.push(geoData);
+                localStorage.setItem("cityObjArr", JSON.stringify(cityObjArr));
             }   
      
 
@@ -63,8 +69,8 @@ function getCoordinates(event, cityNameInput, countryCode) {
 
 
     
-            
-function currentWeather(cityNameInput, coordinates) {
+ // here we fetch the coordinates weve just gathered above and apply them to the current weather api link. we then create variables and append each element to a container in the html.
+function currentWeather(coordinates) {
        var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + coordinates[0] + '&lon=' + coordinates[1] + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
        fetch(todayWeather).then(
                     function (data) {
@@ -96,7 +102,7 @@ function currentWeather(cityNameInput, coordinates) {
                         })
             }
         
-
+// this function checks above in the geocode api to see whether the api returns. If response errors, we alert the user to enter a valid city name
 var errorCheck = function (data) {
     var empty = JSON.stringify(data);
     if (empty === "[]") {
@@ -105,7 +111,8 @@ var errorCheck = function (data) {
     }
     return false
 }
-
+// This loops through the forecast gathering data for each day for the specific city. 
+// if it errors we catch and console it
 var dayLoop = function (coordinates) {
     var requestURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + coordinates[0] + '&lon=' + coordinates[1] + '&appid=4973a6326f483e7b798272289cc9113f&units=imperial';
 
@@ -160,7 +167,7 @@ var dayLoop = function (coordinates) {
                 }
             }).catch((err) => console.error(err))
 }
-
+// this makes buttons for each city entered into our local storage.
 makeCityButton = function (cityName = null) {
     if (cityName === null) {
         var cityObjArr = JSON.parse(localStorage.getItem("cityObjArr"));
@@ -178,7 +185,7 @@ makeCityButton = function (cityName = null) {
                 }
             })
         }
-    } else {
+    } else { //if the city doesnt we create it.
         var cityButton = document.getElementById(`new-city-${cityName}`);
         if (cityButton === null) {
             var newButton = document.createElement("button");
@@ -186,13 +193,12 @@ makeCityButton = function (cityName = null) {
             newButton.classList.add('buttonStyle');
             asideContainer.appendChild(newButton);
             newButton.id = (`new-city-${cityName}`);
-            // newButton.onclick = function (event) { getWeather(event, cityName) };
             newButtonClick(newButton, cityName);
         }
     }
 }
 
-
+// click functions for all our buttons.
 var newButtonClick = function (newButton, cityName) {
     newButton.onclick = function (event) { getCoordinates(event, cityName) }
 }
