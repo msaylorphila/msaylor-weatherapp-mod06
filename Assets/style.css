@@ -36,8 +36,13 @@ input {
     justify-content: end;
 }
 
-.dayColor {
+.dayColor, #currentContainer {
     background-color: #52b2bf; 
+    border-radius: 8px;
+    font-size: 18px;
+}
+#currentContainer {
+    max-width: 60%;
 }
 
 #days-container {
@@ -56,8 +61,8 @@ input {
     width: 60%;
 }
 
-#formLabelEl {
-    font-size: 22px;
+#formLabelEl, .font-sizeel {
+    font-size: 30px;
 
 }
 

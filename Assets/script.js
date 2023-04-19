@@ -91,10 +91,16 @@ function currentWeather(coordinates) {
                             dateEl.textContent = todayDate;
                             tempEl.textContent = temp;
                             windEl.textContent = wind;
+                            headerEl.classList.add('dayColor', 'font-sizeel'),
+                            dateEl.classList.add('dayColor')
+                            tempEl.classList.add('dayColor'),
+                            windEl.classList.add('dayColor'),
+                            humidityEl.classList.add('dayColor'),
                             humidityEl.textContent = humidity;
                             var icon = currentWeather.weather[0].icon;
                             var img0 = document.createElement("img");
                             img0.src = 'https://openweathermap.org/img/w/' + icon + '.png';
+                            img0.classList.add('dayColor');
                             currentContainer.append(headerEl, dateEl, tempEl, windEl, humidityEl);
                             dateEl.appendChild(img0);
 
