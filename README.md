@@ -2,7 +2,7 @@
 
 ## Description
 
-In this module we developed a weather dashboard using the openweather API. We made calls using a city name to get the current weather as well as the next five days.
+In this module we developed a weather dashboard using the openweather API. We made calls using a city name to get the current weather as well as the next five days. 
 
 ## Usage
 
